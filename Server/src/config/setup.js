@@ -3,6 +3,7 @@ import * as AdminJSMongoose from "@adminjs/mongoose";
 import AdminJSFastify from "@adminjs/fastify";
 import * as Models from "../models/ModelCombined.js";
 import { authenticate, sessionStore } from "./config.js";
+import { dark, light, noSidebar } from "@adminjs/themes";
 AdminJS.registerAdapter(AdminJSMongoose);
 
 export const admin = new AdminJS({
@@ -17,7 +18,7 @@ export const admin = new AdminJS({
     {
       resource: Models.Admin,
       options: {
-        listProperties: ["name","email", "role", "isActivated"],
+        listProperties: ["name", "email", "role", "isActivated"],
         filterProperties: ["name", "role"],
       },
     },
@@ -31,11 +32,26 @@ export const admin = new AdminJS({
     {
       resource: Models.Branch,
     },
+    {
+      resource: Models.Product,
+      options: {
+        listProperties: ["name", "price", "category"], // Make sure these fields exist in the schema
+        filterProperties: ["name", "category"],
+      },
+    },
+    {
+      resource: Models.Category,
+    },
   ],
   branding: {
     companyName: "Blinkit",
     withMadeWithLove: false,
+    favicon:
+      "https://res.cloudinary.com/dqjeist4k/image/upload/v1730192478/Blinkit/blinkit-logo_j6jfbr.png",
+    logo: "https://res.cloudinary.com/dqjeist4k/image/upload/v1730192478/Blinkit/blinkit-logo_j6jfbr.png",
   },
+  defaultTheme: dark.id,
+  availableThemes: [dark, light, noSidebar],
   rootPath: "/admin",
 });
 
