@@ -42,6 +42,12 @@ export const admin = new AdminJS({
     {
       resource: Models.Category,
     },
+    {
+      resource: Models.Order,
+    },
+    {
+      resource: Models.Counter,
+    },
   ],
   branding: {
     companyName: "Blinkit",
@@ -50,7 +56,6 @@ export const admin = new AdminJS({
       "https://res.cloudinary.com/dqjeist4k/image/upload/v1730192478/Blinkit/blinkit-logo_j6jfbr.png",
     logo: "https://res.cloudinary.com/dqjeist4k/image/upload/v1730192478/Blinkit/blinkit-logo_j6jfbr.png",
   },
-  defaultTheme: dark.id,
   availableThemes: [dark, light, noSidebar],
   rootPath: "/admin",
 });

@@ -21,8 +21,6 @@ export const authenticate = async (email, password) => {
       return null;
     }
     const isPasswordMatched = await admin.comparePassword(password);
-    console.log(password)
-    console.log(isPasswordMatched)
     if (isPasswordMatched) {
       return Promise.resolve({ email: email, password: password });
     } else {

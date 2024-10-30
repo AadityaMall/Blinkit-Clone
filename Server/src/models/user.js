@@ -58,6 +58,10 @@ DeliveryPartnerSchema.pre("save", async function (next) {
   }
   this.password = await bcryptjs.hash(this.password, 10);
 });
+DeliveryPartnerSchema.methods.comparePassword = async function (enteredPass) {
+  const res = await bcryptjs.compare(enteredPass, this.password);
+  return res;
+};
 
 const AdminSchema = new mongoose.Schema({
   ...UserSchema.obj,
