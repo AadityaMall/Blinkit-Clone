@@ -5,7 +5,6 @@ import { categories, products } from "./src/config/seedData.js";
 
 async function seedDatabse(){
     try {
-        console.log(process.env.DB_URI);
         await mongoose.connect(process.env.DB_URI);
         const categoryDocuments =  await Category.insertMany(categories);
         
