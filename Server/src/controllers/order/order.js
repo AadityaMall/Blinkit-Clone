@@ -10,7 +10,7 @@ export const createOrder = async (req, res) => {
     const { userId } = req.user;
     const { items, branch, totalPrice } = req.body;
     const customerData = await Customer.findById(userId);
-    const branchData = await Branch.find(branch);
+    const branchData = await Branch.findById(branch);
     if (!customerData) {
       return res.status(404).send({ message: "Customer Not Found" });
     }
@@ -32,14 +32,15 @@ export const createOrder = async (req, res) => {
         address: customerData.address || "No Address Available",
       },
       pickupLocation: {
-        latitude: branchData.liveLocation.latitude,
-        longitude: branchData.liveLocation.longitude,
+        latitude: branchData.location.latitude,
+        longitude: branchData.location.longitude,
         address: branchData.address || "No Address Available",
       },
     });
     const savedOrder = await newOrder.save();
     return res.status(201).send({ message: "Order Created" });
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ message: "Error Creating Order" });
   }
 };
@@ -71,6 +72,7 @@ export const confirmOrder = async (req, res) => {
       longitude: deliveryPersonLocation?.longitude,
       address: deliveryPersonLocation.address || "No Address Available",
     };
+    req.server.io.to(orderId).emit("orderConfirmed", order)
     await order.save();
     return res.send(order);
   } catch (error) {
@@ -101,6 +103,8 @@ export const updateOrder = async (req, res) => {
     order.status = status;
     order.deliveryPersonLocation = deliveryPersonLocation;
     await order.save();
+    req.server.io.to(orderId).emit("liveTrackingUpdates", order)
+
     return res.send(order);
   } catch (error) {
     return res.status(500).send({ message: "Error in updating order status" });
@@ -121,8 +125,9 @@ export const getOrders = async (req, res) => {
       query.deliveryPartner = deliveryPartnerId;
     }
     if (branchId) {
-      query.branchId = branchId;
+        query.branch = branchId;
     }
+    console.log(query)
     const orders = await Order.find(query).populate(
       "customer items.item branch deliveryPartner"
     );
